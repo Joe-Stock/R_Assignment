@@ -62,6 +62,244 @@ colnames(t_teosinte)[1] <- "SNP_ID"
 maize_merged <- merge(snp, t_maize, by = "SNP_ID")
 teosinte_merged <- merge(snp, t_teosinte, by = "SNP_ID")
 
+head(maize_merged)
+head(teosinte_merged)
+
+#To make sure my columns are correct according to the assignment, I will switch the 2nd column to the 4th column location, to have SNP_ID, Chromosome and Position in order.
+
+maize_merged <- maize_merged[c(1,3,4,2,5:1588)]
+head(maize_merged)
+teosinte_merged <- teosinte_merged[c(1,3,4,2,5:990)]
+head(teosinte_merged)
+
+#Now I want to split and sort by position, but I have some with position as multiple, unknown or NA. To be able to perform the next step without excluding those I will categorize multiple positions as 0 and unknowns to also be NA. Disregard the chromosome information, I am attempting to run my chromosome and sorting through a for loop function and need to match chromosome to numeric. Still can't get it to work.
+
+```{r}
+maize_merged$Position[maize_merged$Position == "multiple"] <- 0
+maize_merged$Position[maize_merged$Position == "unknown"] <- NA
+maize_merged$Chromosome[maize_merged$Chromosome == "multiple"] <- 0
+maize_merged$Chromosome[maize_merged$Chromosome == "unknown"] <- NA
+
+teosinte_merged$Position[teosinte_merged$Position == "multiple"] <- 0
+teosinte_merged$Position[teosinte_merged$Position == "unknown"] <- NA
+teosinte_merged$Chromosome[teosinte_merged$Chromosome == "multiple"] <- 0
+teosinte_merged$Chromosome[teosinte_merged$Chromosome == "unknown"] <- NA
+```
+
+#I will split the maize file into files by chromosome and I want to sort by position. However, looking back at the structure of the position variable, it is a character and not a value and will not sort correctly. I must change the structure of the position variable and then sort.
+
+```{r}
+maize_merged$Position = as.numeric(as.character(maize_merged$Position))
+maize_merged$Chromosome = as.numeric(as.character(maize_merged$Chromosome))
+teosinte_merged$Position = as.numeric(as.character(teosinte_merged$Position))
+teosinte_merged$Chromosome = as.numeric(as.character(teosinte_merged$Chromosome))
+```
+
+#Now that I have changed the position variable to numeric, I can split my files into the 10 chromosome files and apply the other criteria such as ascending or descending order or substituting values for unknown SNP's.
+
+#Maize Chromosome 1
+```{r}
+maize_1 = maize_merged[maize_merged$Chromosome == 1,]
+maize_1 = maize_1[order(maize_1$Position),]
+maize_1_ascend = data.frame(lapply(maize_1, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_1_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_1_ascend.txt", sep = "\t")
+maize_1 = maize_1[order(rev(maize_1$Position)),]
+maize_1_descend = data.frame(lapply(maize_1, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_1_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_1_descend.txt", sep = "\t")
+```
+#Maize Chromosome 2
+```{r}
+maize_2 <- maize_merged[maize_merged$Chromosome == 2,]
+maize_2 <- maize_2[order(maize_2$Position),]
+maize_2_ascend = data.frame(lapply(maize_2, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_2_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_2_ascend.txt", sep = "\t")
+maize_2 = maize_2[order(rev(maize_2$Position)),]
+maize_2_descend = data.frame(lapply(maize_2, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_2_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_2_descend.txt", sep = "\t")
+```
+#Maize Chromosome 3
+```{r}
+maize_3 <- maize_merged[maize_merged$Chromosome == 3,]
+maize_3 <- maize_3[order(maize_3$Position),]
+maize_3_ascend = data.frame(lapply(maize_3, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_3_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_3_ascend.txt", sep = "\t")
+maize_3 = maize_3[order(rev(maize_3$Position)),]
+maize_3_descend = data.frame(lapply(maize_3, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_3_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_3_descend.txt", sep = "\t")
+```
+#Maize Chromosome 4
+```{r}
+maize_4 <- maize_merged[maize_merged$Chromosome == 4,]
+maize_4 <- maize_4[order(maize_4$Position),]
+maize_4_ascend = data.frame(lapply(maize_4, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_4_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_4_ascend.txt", sep = "\t")
+maize_4 = maize_4[order(rev(maize_4$Position)),]
+maize_4_descend = data.frame(lapply(maize_4, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_4_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_4_descend.txt", sep = "\t")
+```
+#Maize Chromosome 5
+```{r}
+maize_5 <- maize_merged[maize_merged$Chromosome == 5,]
+maize_5 <- maize_5[order(maize_5$Position),]
+maize_5_ascend = data.frame(lapply(maize_5, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_5_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_5_ascend.txt", sep = "\t")
+maize_5 = maize_5[order(rev(maize_5$Position)),]
+maize_5_descend = data.frame(lapply(maize_5, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_5_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_5_descend.txt", sep = "\t")
+```
+#Maize Chromosome 6
+```{r}
+maize_6 <- maize_merged[maize_merged$Chromosome == 6,]
+maize_6 <- maize_6[order(maize_6$Position),]
+maize_6_ascend = data.frame(lapply(maize_6, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_6_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_6_ascend.txt", sep = "\t")
+maize_6 = maize_6[order(rev(maize_6$Position)),]
+maize_6_descend = data.frame(lapply(maize_6, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_6_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_6_descend.txt", sep = "\t")
+```
+#Maize Chromosome 7
+```{r}
+maize_7 <- maize_merged[maize_merged$Chromosome == 7,]
+maize_7 <- maize_7[order(maize_7$Position),]
+maize_7_ascend = data.frame(lapply(maize_7, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_7_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_7_ascend.txt", sep = "\t")
+maize_7 = maize_7[order(rev(maize_7$Position)),]
+maize_7_descend = data.frame(lapply(maize_7, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_7_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_7_descend.txt", sep = "\t")
+```
+#Maize Chromosome 8
+```{r}
+maize_8 <- maize_merged[maize_merged$Chromosome == 8,]
+maize_8 <- maize_8[order(maize_8$Position),]
+maize_8_ascend = data.frame(lapply(maize_8, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_8_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_8_ascend.txt", sep = "\t")
+maize_8 = maize_8[order(rev(maize_8$Position)),]
+maize_8_descend = data.frame(lapply(maize_8, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_8_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_8_descend.txt", sep = "\t")
+```
+#Maize Chromosome 9
+```{r}
+maize_9 <- maize_merged[maize_merged$Chromosome == 9,]
+maize_9 <- maize_9[order(maize_9$Position),]
+maize_9_ascend = data.frame(lapply(maize_9, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_9_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_9_ascend.txt", sep = "\t")
+maize_9 = maize_9[order(rev(maize_9$Position)),]
+maize_9_descend = data.frame(lapply(maize_9, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_9_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_9_descend.txt", sep = "\t")
+```
+#Maize Chromosome 10
+```{r}
+maize_10 <- maize_merged[maize_merged$Chromosome == 10,]
+maize_10 <- maize_10[order(maize_10$Position),]
+maize_10_ascend = data.frame(lapply(maize_10, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(maize_10_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_10_ascend.txt", sep = "\t")
+maize_10 = maize_10[order(rev(maize_10$Position)),]
+maize_10_descend = data.frame(lapply(maize_10, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(maize_10_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/maize_10_descend.txt", sep = "\t")
+```
+
+
+#Teosinte Chromosome 1
+```{r}
+teosinte_1 = teosinte_merged[teosinte_merged$Chromosome == 1,]
+teosinte_1 = teosinte_1[order(teosinte_1$Position),]
+teosinte_1_ascend = data.frame(lapply(teosinte_1, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_1_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_1_ascend.txt", sep = "\t")
+teosinte_1 = teosinte_1[order(rev(teosinte_1$Position)),]
+teosinte_1_descend = data.frame(lapply(teosinte_1, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_1_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_1_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 2
+```{r}
+teosinte_2 <- teosinte_merged[teosinte_merged$Chromosome == 2,]
+teosinte_2 <- teosinte_2[order(teosinte_2$Position),]
+teosinte_2_ascend = data.frame(lapply(teosinte_2, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_2_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_2_ascend.txt", sep = "\t")
+teosinte_2 = teosinte_2[order(rev(teosinte_2$Position)),]
+teosinte_2_descend = data.frame(lapply(teosinte_2, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_2_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_2_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 3
+```{r}
+teosinte_3 <- teosinte_merged[teosinte_merged$Chromosome == 3,]
+teosinte_3 <- teosinte_3[order(teosinte_3$Position),]
+teosinte_3_ascend = data.frame(lapply(teosinte_3, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_3_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_3_ascend.txt", sep = "\t")
+teosinte_3 = teosinte_3[order(rev(teosinte_3$Position)),]
+teosinte_3_descend = data.frame(lapply(teosinte_3, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_3_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_3_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 4
+```{r}
+teosinte_4 <- teosinte_merged[teosinte_merged$Chromosome == 4,]
+teosinte_4 <- teosinte_4[order(teosinte_4$Position),]
+teosinte_4_ascend = data.frame(lapply(teosinte_4, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_4_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_4_ascend.txt", sep = "\t")
+teosinte_4 = teosinte_4[order(rev(teosinte_4$Position)),]
+teosinte_4_descend = data.frame(lapply(teosinte_4, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_4_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_4_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 5
+```{r}
+teosinte_5 <- teosinte_merged[teosinte_merged$Chromosome == 5,]
+teosinte_5 <- teosinte_5[order(teosinte_5$Position),]
+teosinte_5_ascend = data.frame(lapply(teosinte_5, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_5_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_5_ascend.txt", sep = "\t")
+teosinte_5 = teosinte_5[order(rev(teosinte_5$Position)),]
+teosinte_5_descend = data.frame(lapply(teosinte_5, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_5_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_5_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 6
+```{r}
+teosinte_6 <- teosinte_merged[teosinte_merged$Chromosome == 6,]
+teosinte_6 <- teosinte_6[order(teosinte_6$Position),]
+teosinte_6_ascend = data.frame(lapply(teosinte_6, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_6_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_6_ascend.txt", sep = "\t")
+teosinte_6 = teosinte_6[order(rev(teosinte_6$Position)),]
+teosinte_6_descend = data.frame(lapply(teosinte_6, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_6_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_6_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 7
+```{r}
+teosinte_7 <- teosinte_merged[teosinte_merged$Chromosome == 7,]
+teosinte_7 <- teosinte_7[order(teosinte_7$Position),]
+teosinte_7_ascend = data.frame(lapply(teosinte_7, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_7_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_7_ascend.txt", sep = "\t")
+teosinte_7 = teosinte_7[order(rev(teosinte_7$Position)),]
+teosinte_7_descend = data.frame(lapply(teosinte_7, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_7_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_7_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 8
+```{r}
+teosinte_8 <- teosinte_merged[teosinte_merged$Chromosome == 8,]
+teosinte_8 <- teosinte_8[order(teosinte_8$Position),]
+teosinte_8_ascend = data.frame(lapply(teosinte_8, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_8_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_8_ascend.txt", sep = "\t")
+teosinte_8 = teosinte_8[order(rev(teosinte_8$Position)),]
+teosinte_8_descend = data.frame(lapply(teosinte_8, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_8_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_8_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 9
+```{r}
+teosinte_9 <- teosinte_merged[teosinte_merged$Chromosome == 9,]
+teosinte_9 <- teosinte_9[order(teosinte_9$Position),]
+teosinte_9_ascend = data.frame(lapply(teosinte_9, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_9_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_9_ascend.txt", sep = "\t")
+teosinte_9 = teosinte_9[order(rev(teosinte_9$Position)),]
+teosinte_9_descend = data.frame(lapply(teosinte_9, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_9_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_9_descend.txt", sep = "\t")
+```
+#Teosinte Chromosome 10
+```{r}
+teosinte_10 <- teosinte_merged[teosinte_merged$Chromosome == 10,]
+teosinte_10 <- teosinte_10[order(teosinte_10$Position),]
+teosinte_10_ascend = data.frame(lapply(teosinte_10, function(x){gsub("\\?\\/\\?", "\\?", x)}))
+write.table(teosinte_10_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_10_ascend.txt", sep = "\t")
+teosinte_10 = teosinte_10[order(rev(teosinte_10$Position)),]
+teosinte_10_descend = data.frame(lapply(teosinte_10, function(x){gsub("\\?\\/\\?", "\\-", x)}))
+write.table(teosinte_10_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_10_descend.txt", sep = "\t")
+```
+
 
 ```{r}
 plot(cars)
