@@ -2,6 +2,7 @@
 title: "R Notebook - R Assignment BCB 546X"
 output: html_notebook
 ---
+#Part 1
 
 #First I need to import the two files I will be using. To do this I will use read_delim().
 #Using view() also allows me to look at the file as well.
@@ -316,6 +317,19 @@ write.table(teosinte_10_ascend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/te
 teosinte_10 = teosinte_10[order(rev(teosinte_10$Position)),]
 teosinte_10_descend = data.frame(lapply(teosinte_10, function(x){gsub("\\?\\/\\?", "\\-", x)}))
 write.table(teosinte_10_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/teosinte_10_descend.txt", sep = "\t")
+```
+
+#Part 2
+
+#Since the data loaded in from the previous exercise still exists I want to create a total merged file since we will be looking at all groups now and then install the reshape2 package.
+
+```{r}
+num_snps <- as.data.frame(table(snp$Chromosome))
+num_snps
+num_snps <- num_snps[c(1,3:10,2,11:12),]
+num_snps$Var1 <- as.character(num_snps$Var1)
+num_snps$Var1 <- factor(num_snps$Var1, levels=unique(num_snps$Var1))
+ggplot(num_snps, aes(Var1,Freq)) + geom_point()
 ```
 
 
