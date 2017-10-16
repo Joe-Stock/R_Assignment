@@ -2,14 +2,17 @@
 title: "R Notebook - R Assignment BCB 546X"
 output: html_notebook
 ---
+
+#**Important - If you are recreating this code, you will need to change the paths for each of the files listed if you have cloned the data to your computer.** 
 #Part 1
 
 #First I need to import the two files I will be using. To do this I will use read_delim().
 #Using view() also allows me to look at the file as well.
+#Depending on where the original files are saved, you will need to change the path of the files.
 
 ```{r}
 library(readr)
-fang <- read_delim("C:/Users/Stock/Desktop/BCB-546X/R_Assignment/fang_et_al_genotypes.txt", "\t", escape_double = FALSE, col_names = FALSE, trim_ws = TRUE)
+fang <- read_delim("C:/Users/Joe_S/Desktop/BCB Class/R_Assignment/fang_et_al_genotypes.txt", "\t", escape_double = FALSE, col_names = FALSE, trim_ws = TRUE)
 View(fang)
 ```
 
@@ -17,7 +20,7 @@ View(fang)
 
 ```{r}
 library(readr)
-snp <- read_delim("C:/Users/Stock/Desktop/BCB-546X/R_Assignment/snp_position.txt", 
+snp <- read_delim("C:/Users/Joe_S/Desktop/BCB Class/R_Assignment/snp_position.txt", 
     "\t", escape_double = FALSE, trim_ws = TRUE)
 View(snp)
 ```
@@ -114,7 +117,7 @@ teosinte_merged$Position = as.numeric(as.character(teosinte_merged$Position))
 teosinte_merged$Chromosome = as.numeric(as.character(teosinte_merged$Chromosome))
 ```
 
-#Now that I have changed the position variable to numeric, I can split my files into the 10 chromosome files and apply the other criteria such as ascending or descending order or substituting values for unknown SNP's.
+#Now that I have changed the position variable to numeric, I can split my files into the 10 chromosome files and apply the other criteria such as ascending or descending order or substituting values for unknown SNP's. I then output the files I create using the write.table function and specify the path. If someone else is using this code they will need to change the path to their own folder of choice.
 
 #Maize Chromosome 1
 ```{r}
@@ -324,6 +327,16 @@ write.table(teosinte_10_descend, "C:/Users/Stock/Desktop/BCB-546X/R_Assignment/t
 #Since the data loaded in from the previous exercise still exists I want to create a total merged file since we will be looking at all groups now and then install the reshape2 package.
 
 ```{r}
+install.packages("reshape2")
+library(reshape2)
+fang_melt <- melt(fang)
+snp_melt <- melt(snp)
+```
+
+#I will graph the number of SNPs per Chromosome in the next part.
+
+```{r}
+library(ggplot2)
 num_snps <- as.data.frame(table(snp$Chromosome))
 num_snps
 num_snps <- num_snps[c(1,3:10,2,11:12),]
@@ -331,5 +344,41 @@ num_snps$Var1 <- as.character(num_snps$Var1)
 num_snps$Var1 <- factor(num_snps$Var1, levels=unique(num_snps$Var1))
 ggplot(num_snps, aes(Var1,Freq)) + geom_point() + xlab("Chromosome") + ylab("Number of SNPs") + ggtitle("Number of SNPs per Chromosome") + theme(plot.title = element_text(hjust = 0.5))
 ```
+
+#As shown in the graph, SNP # is decreasing from Chromosome 1 - 10. SNP's mapped to multiple chromosomes and unknown location are added at the end to identify how many are included in those categories as well. 
+
+#The next step I want to take is to look at group number and identify how many samples each group is contributing to these numbers.
+
+```{r}
+num_groups <- as.data.frame(table(fang$X3))
+num_groups
+num_groups <- num_groups[-1,]
+ggplot(num_groups, aes(Var1,Freq)) + geom_point() + xlab("Group") + ylab("Number of Observations") + ggtitle("Number of Observations per Group") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+#I need to add the header back to the fang dataset to look at the individual SNPs question from the homework.
+
+```{r}
+colnames(fang) <- fang[1,]
+fang <- fang[-1,]
+```
+
+```{r}
+fang$abph1.20_num <- ""
+fang$abph1.20_num[fang$abph1.20 == "C/C"] <- 2
+fang$abph1.20_num[fang$abph1.20 == "G/G"] <- 2
+fang$abph1.20_num[fang$abph1.20 == "C/G"] <- 1
+fang$abph1.20_num[fang$abph1.20 == "G/C"] <- 1
+fang$abph1.20_num[fang$abph1.20 == "?/?"] <- NA
+```
+
+#This has converted the homozygous to 2 and the heterozygous to 1 and ?/? to NA.
+#Now I want to plot the frequency of the SNPs in each of the groups.
+
+```{r}
+ggplot(fang, aes(x=Group, fill = abph1.20_num)) + geom_bar(aes(y = (..count..)/sum(..count..)),position = position_dodge(width = 0.5)) + scale_y_continuous(breaks = c(0,0.05,0.12,0.2,0.25,0.3,0.35)) + ylab("Frequency") + ggtitle("Homozygous vs Heterozygous Frequency in the abph1.20 SNP by Group") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+#As can be seen in the graph there are a few groups that have the large numbers. However, I can also see that in all cases the homozygous SNPs are in greater proportion to the heterozygous SNPs. In one group (TRIP) this SNP is not present. I used posiiton_dodge within the graph to stagger the histogram as well.
 
 
