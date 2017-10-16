@@ -4,6 +4,7 @@ output: html_notebook
 ---
 
 #**Important - If you are recreating this code, you will need to change the paths for each of the files listed if you have cloned the data to your computer.** 
+
 #Part 1
 
 #First I need to import the two files I will be using. To do this I will use read_delim().
@@ -381,4 +382,22 @@ ggplot(fang, aes(x=Group, fill = abph1.20_num)) + geom_bar(aes(y = (..count..)/s
 
 #As can be seen in the graph there are a few groups that have the large numbers. However, I can also see that in all cases the homozygous SNPs are in greater proportion to the heterozygous SNPs. In one group (TRIP) this SNP is not present. I used posiiton_dodge within the graph to stagger the histogram as well.
 
+#The last thing I need to do is graph something that I think would be beneficial to look at. I would like to do the same thing we just did with the abph1.20 SNP, but instead of looking at just homozygotes and heterozygotes, I want to recode the data as 0,1,2 to see how many copies of C the SNP has.
 
+```{r}
+fang$abph1.20_num <- ""
+fang$abph1.20_num[fang$abph1.20 == "C/C"] <- 2
+fang$abph1.20_num[fang$abph1.20 == "G/G"] <- 0
+fang$abph1.20_num[fang$abph1.20 == "C/G"] <- 1
+fang$abph1.20_num[fang$abph1.20 == "G/C"] <- 1
+fang$abph1.20_num[fang$abph1.20 == "?/?"] <- NA
+```
+
+#This has converted the homozygous C/C to 2, the heterozygotes to 1, the homozygous G/G to 0 and ?/? to NA.
+#Now I want to plot the frequency of the SNPs in each of the groups.
+
+```{r}
+ggplot(fang, aes(x=Group, fill = abph1.20_num)) + geom_bar(aes(y = (..count..)/sum(..count..)),position = position_dodge(width = 0.5)) + scale_y_continuous(breaks = c(0,0.05,0.12,0.2,0.25,0.3,0.35)) + ylab("Frequency") + ggtitle("Homozygous vs Heterozygous Frequency in the abph1.20 SNP by Group") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+#This gives me a better understanding of how the SNP is coded, instead of just homozygous/heterozygous.
